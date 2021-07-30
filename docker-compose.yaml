@@ -16,7 +16,7 @@ services:
       - "3000:3000"
     depends_on: 
       - db
-    entrypoint: dockerize -wait tcp://db:3306 -timeout 120s node index.js
+    entrypoint: bash -c "npm install && dockerize -wait tcp://db:3306 -timeout 120s node index.js"
     image: challenge02-fullcycle-node
 
   nginx:
@@ -37,17 +37,20 @@ services:
   db:
     platform: linux/x86_64
     image: mysql:5.7
-    command: --innodb-use-native-aio=0
     container_name: db
     restart: always
     tty: true
+    command: --innodb-use-native-aio=0 --init-file /data/application/mysql-init.sql
     volumes:
       - ./mysql:/var/lib/mysql
+      - ./mysql-init.sql:/data/application/mysql-init.sql
     environment: 
       - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=root
     networks: 
       - node-network
+    ports:
+      - "3306:3306"
 
 networks: 
   node-network:
