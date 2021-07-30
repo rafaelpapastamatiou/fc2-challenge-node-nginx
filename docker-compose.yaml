@@ -16,7 +16,7 @@ services:
       - "3000:3000"
     depends_on: 
       - db
-    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node index.js
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 120s node index.js
     image: challenge02-fullcycle-node
 
   nginx:
@@ -31,7 +31,7 @@ services:
     image: challenge02-fullcycle-nginx
     depends_on: 
       - app
-    entrypoint: dockerize -wait tcp://app:3000/health -timeout 20s nginx
+    entrypoint: dockerize -wait tcp://app:3000/health -timeout 120s nginx
     command: -g "daemon off;"
 
   db:
